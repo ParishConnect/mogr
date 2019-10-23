@@ -183,6 +183,10 @@ export class Registry {
     fields: PopulatableField[] = []
   ): PopulatableField[] {
 
+    if (!type) {
+      return []
+    }
+
     if (type.ref && typeof type.ref === 'string') {
 
       if (!fields.map(field => field.path).includes(path)) {
