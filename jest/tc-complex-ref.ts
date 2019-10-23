@@ -74,6 +74,9 @@ export function complexRefCase(connection: Connection): ComplexRefTestCase {
     }
   });
 
+  const ClonedSchema = BazSchema.clone()
+  ComplexRefParentSchema.add({clones: [ClonedSchema]})
+
   const simpleModel = getSimpleModel(connection);
   simpleModel.discriminator(childModelName, ComplexRefChildSchema);
 
