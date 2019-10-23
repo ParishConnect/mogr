@@ -1,8 +1,8 @@
 import { Connection, Document, Model, Schema } from 'mongoose';
 
-export function getParentModel(connection: Connection, child: Model<Document>) {
+export function getParentModel(connection: Connection, child: Model<Document>, _name?: string) {
 
-  const name = 'ParentModel';
+  const name = _name || 'ParentModel';
   if (connection.modelNames().includes(name)) return connection.model(name);
 
   const ParentSchema = new Schema({
@@ -12,5 +12,5 @@ export function getParentModel(connection: Connection, child: Model<Document>) {
     }
   });
 
-  return connection.model('ParentModel', ParentSchema);
+  return connection.model(name, ParentSchema);
 }

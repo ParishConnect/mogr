@@ -111,9 +111,12 @@ export class Registry {
    */
   private _getSelections(info: GraphQLResolveInfo, root: string) {
 
-    const operationSelection: SelectionSetNode =
-      (info.operation.selectionSet.selections[0] as FieldNode)
-        .selectionSet as SelectionSetNode;
+    const operationSelection: SelectionSetNode = root
+      ? ((info.operation.selectionSet.selections[0] as FieldNode)
+          .selectionSet as SelectionSetNode)
+      : ((info.operation.selectionSet.selections.find(
+          selection => (selection as FieldNode).name.value === info.fieldName
+        ) as FieldNode).selectionSet as SelectionSetNode);
 
     return this._getSelectionsOffsetByPath(
       operationSelection,

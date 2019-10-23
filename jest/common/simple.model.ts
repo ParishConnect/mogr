@@ -1,8 +1,8 @@
 import { Connection, Schema } from 'mongoose';
 
-export function getSimpleModel(connection: Connection) {
+export function getSimpleModel(connection: Connection, _name?: string) {
 
-  const name = 'SimpleModel';
+  const name = _name || 'SimpleModel';
   if (connection.modelNames().includes(name)) return connection.model(name);
 
   const SimpleSchema = new Schema({

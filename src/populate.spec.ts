@@ -5,6 +5,7 @@ import { refCase } from '../jest/tc-ref';
 import { refSelected } from '../jest/tc-ref-selected';
 import { inlineFragmentRefCase } from '../jest/ts-inline-fragment-ref';
 import { Registry } from './registry';
+import { multipleCase } from '../jest/tc-multiple';
 
 describe('populate', () => {
 
@@ -73,6 +74,48 @@ describe('populate', () => {
     `);
 
     expect(population).toEqual([{ path: 'child', populate: [], select: ['id', 'foo', 'bar'] }]);
+  });
+
+  it('should handle multiple GraphQL Fields', async () => {
+
+    const tc = multipleCase(connection);
+    let firstpopulation: ModelPopulateOptions[];
+    let secondpopulation: ModelPopulateOptions[];
+
+    const server = mockServer(tc.schema, {
+      FirstType: (...args) => {
+        const info = args[args.length - 1];
+        firstpopulation = registry.populate(info, tc.firstModel.modelName);
+        return tc.response;
+      },
+      SecondType: (...args) => {
+        const info = args[args.length - 1];
+        secondpopulation = registry.populate(info, tc.secondModel.modelName);
+        return tc.response;
+      }
+    });
+
+    await server.query(`
+      query multiple {
+        first {
+          child {
+            foo
+          }
+        }
+        second {
+          child {
+            bar
+          }
+        }
+      }
+    `);
+
+    expect(firstpopulation).toEqual([
+      { path: 'child', populate: [], select: ['id', 'foo'] }
+    ]);
+    expect(secondpopulation).toEqual([
+      { path: 'child', populate: [], select: ['id', 'bar'] }
+    ]);
   });
 
   it('should handle complex GraphQL Fields', async () => {
