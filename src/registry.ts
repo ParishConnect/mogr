@@ -184,7 +184,7 @@ export class Registry {
   ): PopulatableField[] {
 
     if (!type) {
-      return []
+      return fields
     }
 
     if (type.ref && typeof type.ref === 'string') {
